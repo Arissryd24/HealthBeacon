@@ -1,8 +1,5 @@
 {
   "version": 2,
-  "framework": null,
-  "buildCommand": "bash build.sh",
-  "outputDirectory": "public",
   "builds": [
     {
       "src": "api/index.php",
