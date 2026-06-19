@@ -20,7 +20,7 @@ class AdminThresholdController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'patient_id'      => 'nullable|exists:patients,id',
+            'patient_id'      => 'nullable|',
             'heart_rate_min'  => 'required|numeric',
             'heart_rate_max'  => 'required|numeric',
             'oxygen_min'      => 'required|numeric',
