@@ -51,13 +51,13 @@ const showingNavigationDropdown = ref(false);
                                     Input Vital Sign
                                 </NavLink>
 
-                                <NavLink href="/admin">
-                                    v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'"
-                                    :href="route('admin.dashboard')"
-                                    :active="route().current('admin.*')"
-                                >
-                                    Admin
-                                </NavLink>
+                                <NavLink 
+    v-if="$page.props.auth.user && $page.props.auth.user.role === 'admin'" 
+    :href="route('admin.index')" 
+    :active="route().current('admin.*')"
+>
+    Admin
+</NavLink>
                             </div>
                         </div>
 
