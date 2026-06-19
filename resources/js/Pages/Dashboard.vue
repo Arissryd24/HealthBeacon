@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import VueApexCharts from 'vue3-apexcharts';
 
 const props = defineProps({
@@ -8,6 +8,17 @@ const props = defineProps({
     recentAlerts: Array,
     patients: Array,
 });
+
+// Fungsi hapus bawaan Inertia resmi
+const deleteVitalSign = (vitalsignId) => {
+    if (!vitalsignId) {
+        alert('Pasien ini belum punya data vital sign buat dihapus, bro!');
+        return;
+    }
+    if (confirm('Yakin mau hapus data vital sign terakhir milik pasien ini, bro?')) {
+        router.delete(route('vitalsigns.destroy', vitalsignId));
+    }
+};
 
 const severityColor = (severity) => {
     if (severity === 'critical') return 'bg-red-100 text-red-700 border-red-300';
@@ -32,6 +43,7 @@ const donutOptions = {
 
 <template>
     <Head title="Dashboard" />
+    
     <AuthenticatedLayout>
         <template #header>
             <h2 class="text-xl font-semibold text-gray-800">HealthBeacon — Dashboard</h2>
@@ -39,7 +51,6 @@ const donutOptions = {
 
         <div class="py-6 px-4 max-w-7xl mx-auto space-y-6">
 
-            <!-- Stats Cards -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
                 <div class="bg-white rounded-xl shadow p-4 text-center">
                     <p class="text-sm text-gray-500">Total Pasien</p>
@@ -64,14 +75,11 @@ const donutOptions = {
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                <!-- Donut Chart -->
                 <div class="bg-white rounded-xl shadow p-6">
                     <h3 class="font-semibold text-gray-700 mb-4">Status Pasien</h3>
                     <VueApexCharts type="donut" :options="donutOptions" :series="donutSeries" height="280" />
                 </div>
 
-                <!-- Recent Alerts -->
                 <div class="bg-white rounded-xl shadow p-6">
                     <h3 class="font-semibold text-gray-700 mb-4">⚠️ Alert Aktif Terbaru</h3>
                     <div v-if="recentAlerts.length === 0" class="text-gray-400 text-sm">Tidak ada alert aktif.</div>
@@ -84,7 +92,6 @@ const donutOptions = {
                 </div>
             </div>
 
-            <!-- Patient List -->
             <div class="bg-white rounded-xl shadow p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="font-semibold text-gray-700">Daftar Pasien</h3>
@@ -113,7 +120,17 @@ const donutOptions = {
                                     </span>
                                 </td>
                                 <td class="py-2">
-                                    <Link :href="route('patients.show', patient.id)" class="text-blue-600 hover:underline">Detail</Link>
+                                    <div class="flex items-center space-x-3">
+                                        <Link :href="route('patients.show', patient.id)" class="text-blue-600 hover:underline">Detail</Link>
+                                        
+                                        <button 
+                                            v-if="patient.vital_signs && patient.vital_signs.length > 0"
+                                            @click="deleteVitalSign(patient.vital_signs[0].id)" 
+                                            class="bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded text-xs transition duration-150"
+                                        >
+                                            Hapus
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>

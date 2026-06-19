@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\AlertController;
+use App\Http\Controllers\VitalSignController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminThresholdController;
@@ -22,21 +23,29 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    // Dashboard & Pasien
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/patients', [PatientController::class, 'index'])->name('patients.index');
     Route::get('/patients/{patient}', [PatientController::class, 'show'])->name('patients.show');
+    
+    // Alerts
     Route::get('/alerts', [AlertController::class, 'index'])->name('alerts.index');
     Route::patch('/alerts/{alert}/resolve', [AlertController::class, 'resolve'])->name('alerts.resolve');
 
-    // Admin routes
-    Route::middleware('admin')->group(function () {
-        Route::prefix('admin')->name('admin.')->group(function () {
-            Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
-            Route::resource('users', AdminUserController::class);
-            Route::resource('thresholds', AdminThresholdController::class);
-            Route::resource('activity-logs', AdminActivityController::class)->only(['index']);
-        });
-    });
+    // Route Vital Signs (Punya Lu Tetap Aman di Sini)
+    Route::get('/vital-signs/create', [VitalSignController::class, 'create'])->name('vitalsigns.create');
+    Route::post('/vital-signs/store', [VitalSignController::class, 'store'])->name('vitalsigns.store');
+    Route::delete('/vital-signs/{id}', [VitalSignController::class, 'destroy'])->name('vitalsigns.destroy');
+
+    // ========================================================
+    // ROUTE ADMIN ASLI PUNYA TEMEN LU (BIAR SAMA KAYAK VERCEL)
+    // ========================================================
+    Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.index');
+    Route::get('/admin-dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard'); // Tambahan alias
+    Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+    Route::get('/admin/thresholds', [AdminThresholdController::class, 'index'])->name('admin.thresholds.index');
+    // Ganti/tambahin nama routenya pake nama yang dicari sama Vue temen lu
+    Route::get('/admin/activities', [AdminActivityController::class, 'index'])->name('admin.activity-logs.index');
 });
 
 Route::middleware('auth')->group(function () {
