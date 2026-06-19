@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Patient;
 use App\Models\VitalSign;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 
 class PatientController extends Controller
 {
@@ -18,10 +19,8 @@ class PatientController extends Controller
             ->get();
 
         return Inertia::render('Patients/Index', [
-        'patients' => $patients,
-    
+            'patients' => $patients,
         ]);
-
     }
 
     public function show(Patient $patient)
@@ -39,5 +38,27 @@ class PatientController extends Controller
             'vitalSigns' => $vitalSigns,
             'alerts'     => $alerts,
         ]);
+    }
+
+    // --- FITUR TAMBAH PASIEN (Sesuai struktur model Anda) ---
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name'   => 'required|string|max:255',
+            'status' => 'required|string',
+            // Tambahkan field lain jika ada di tabel pasien Anda
+        ]);
+
+        Patient::create($validated);
+
+        return redirect()->back()->with('message', 'Pasien berhasil ditambahkan.');
+    }
+
+    // --- FITUR HAPUS PASIEN ---
+    public function destroy(Patient $patient)
+    {
+        $patient->delete();
+
+        return redirect()->back()->with('message', 'Pasien berhasil dihapus.');
     }
 }

@@ -4,7 +4,14 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\AlertController;
+<<<<<<< HEAD
 use App\Http\Controllers\VitalSignController;
+=======
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminThresholdController;
+use App\Http\Controllers\Admin\AdminActivityController;
+>>>>>>> 2505380f35563c31eb2c461a695d7c2d2eba821f
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
