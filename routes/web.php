@@ -4,6 +4,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\AlertController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminThresholdController;
+use App\Http\Controllers\Admin\AdminActivityController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -23,6 +27,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/patients/{patient}', [PatientController::class, 'show'])->name('patients.show');
     Route::get('/alerts', [AlertController::class, 'index'])->name('alerts.index');
     Route::patch('/alerts/{alert}/resolve', [AlertController::class, 'resolve'])->name('alerts.resolve');
+
+    // Admin routes
+    Route::middleware('admin')->group(function () {
+        Route::prefix('admin')->name('admin.')->group(function () {
+            Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+            Route::resource('users', AdminUserController::class);
+            Route::resource('thresholds', AdminThresholdController::class);
+            Route::resource('activity-logs', AdminActivityController::class)->only(['index']);
+        });
+    });
 });
 
 Route::middleware('auth')->group(function () {
